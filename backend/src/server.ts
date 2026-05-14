@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import cookieParser from 'cookie-parser';
 import http from 'http';
 import cors from 'cors';
+import path from 'path';
 
 import { connectToDB } from './db/db';
 
@@ -32,6 +33,14 @@ app.get('/health', (req: Request, res: Response) => {
 app.use('/auth', auth);
 app.use('/projects', projects);
 app.use('/tasks', tasks);
+
+// Serve frontend static files in production
+const frontendPath = path.join(__dirname, '../../frontend/dist');
+app.use(express.static(frontendPath));
+
+app.get('*', (req: Request, res: Response) => {
+  res.sendFile(path.join(frontendPath, 'index.html'));
+});
 
 async function startServer() {
   await connectToDB();
