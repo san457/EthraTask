@@ -23,8 +23,10 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-app.get('/', (req: Request, res: Response) => {
-  res.send('Server is running...');
+app.get('/health', (req: Request, res: Response) => {
+  res.status(200).json({
+    status: 'ok',
+  });
 });
 
 app.use('/auth', auth);
@@ -34,7 +36,7 @@ app.use('/tasks', tasks);
 async function startServer() {
   await connectToDB();
 
-  server.listen(PORT, '0.0.0.0', () => {
+  server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
   });
 }
